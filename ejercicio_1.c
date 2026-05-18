@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int potencia (int base, int exp) {
-    
+
     int resultado = 1;
 
     while ( exp > 0) {
@@ -14,7 +14,22 @@ int potencia (int base, int exp) {
 }
 
 int main (void) {
-    printf("2^8 = %d\n", potencia (2, 8));
-    printf("3^4 = %d\n", potencia (3, 4));
+    int base_1, exp_1;  // se declaran las varibales que se van a ingresar por el usuario
+
+    do {                                //inicio del cilo do-while
+
+      printf("Ingrese una base: ");
+        scanf("%d", &base_1);
+
+        printf("Ingrese un exponente: ");
+        scanf("%d", &exp_1);  
+
+        if (( exp_1 < 0) || (base_1 == 0)) {                //validacion del ingreso por teclado
+            printf("Opciones invalidas, la base no debe ser cero y el exponente debe ser mayor que 0 \n");
+        }
+
+    } while (( exp_1 < 0) || (base_1 == 0));        //fin ciclo do-while
+
+    printf("%d^%d = %d\n", base_1, exp_1, potencia (base_1, exp_1));
     return 0;
 }
