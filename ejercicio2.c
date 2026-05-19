@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define SIZE 5
+#define SIZE 4
 /*
 =================================================== SECCION DE FUNCIONES ================================================
 */
@@ -83,10 +83,10 @@ int tiene_columna_completa(int m[][SIZE]) {     //lo mismo ocurre con el caso de
     return 0;
 }
 
-void imprimir_matriz (int m[][SIZE]) {       //esta funcion permite imprimir la matriz por medio de iteraciones
+void imprimir_matriz (int m[][SIZE], char matriz []) {       //esta funcion permite imprimir la matriz por medio de iteraciones
     int i, j;
     
-    printf("Matriz Ingresada: \n");
+    printf("Matriz %s: \n", matriz);
     for (i = 0; i < SIZE; i++) {
         for (j = 0; j < SIZE; j++) {        //la idea es mantener una fila fija mientras se iteran columnas y se van imprimiendo
             printf("%d ", m[i][j]);
@@ -115,12 +115,14 @@ int main(void) {
     int v0, v1, v2;
     char positivo[] = "SI";         //varibales para evaluar resultado de analisis de matrices
     char negativo[] = "NO";
+    char matriz [] = "Ingresada";
+    char matriz_a [] = "Aleatoria";
     int m[SIZE][SIZE] = {
-        {1, 1, 1, 1, 1},
-        {0, 1, 1, 0, 1},
-        {0, 0, 1, 1, 0},
-        {0, 0, 1, 1, 0}, 
-        {0, 0, 1, 1, 0}
+        {1, 1, 1, 1},
+        {0, 1, 1, 0},
+        {0, 0, 1, 1},
+        {0, 0, 1, 1}, 
+        //{0, 0, 1, 1, 0}
     };
     int m_aleatoria [SIZE][SIZE];
     srand(time(NULL));
@@ -133,7 +135,7 @@ int main(void) {
 /* 
 # Llamado de funciones para matriz elegida por el programa #
 */
-    imprimir_matriz(m);
+    imprimir_matriz(m, matriz);
     v0 = es_identidad(m);
     printf("Es matriz identidad:%s \n", (v0 == 1) ? positivo : negativo);        //evaluacion final 
     v1 = tiene_columna_completa(m);
@@ -147,7 +149,7 @@ int main(void) {
 */
     printf("\n");
     rellenar_aleatoria(m_aleatoria);                    
-    imprimir_matriz(m_aleatoria);
+    imprimir_matriz(m_aleatoria, matriz_a);
     v0 = es_identidad(m_aleatoria);
     printf("Es matriz identidad:%s \n", (v0 == 1) ? positivo : negativo);        //evaluacion final 
     v1 = tiene_columna_completa(m_aleatoria);
