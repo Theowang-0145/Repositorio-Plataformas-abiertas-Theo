@@ -98,12 +98,12 @@ void imprimir_matriz (int m[][SIZE]) {       //esta funcion permite imprimir la 
 
 }
 
-void rellenar_aleatoria (int m[][SIZE]){
+void rellenar_aleatoria (int m[][SIZE]){        //esta funcion recibe el parametro de una matriz vacia y la introduce en una matriz m local
     int i, j; 
     for (i = 0; i < SIZE; i++){
         for (j = 0; j < SIZE; j++){
-            m[i][j] = rand() % 2;
-        }
+            m[i][j] = rand() % 2;       //cada fila y columna se llena con un numero del 0 al 1 de manera aleatoria
+        }                               //Y como es una funcion con operaciones se puede utilizar void
     }
 }
 
@@ -128,6 +128,11 @@ int main(void) {
  /* 
 # Llamado de funciones #
 */
+
+
+/* 
+# Llamado de funciones para matriz elegida por el programa #
+*/
     imprimir_matriz(m);
     v0 = es_identidad(m);
     printf("Es matriz identidad:%s \n", (v0 == 1) ? positivo : negativo);        //evaluacion final 
@@ -136,15 +141,19 @@ int main(void) {
     v2 = tiene_fila_completa(m);
     printf("Tiene fila completa de unos:%s \n", (v2 == 1) ? positivo : negativo);
 
+
+/* 
+# Llamado de funciones para matriz aleatoria #
+*/
     printf("\n");
-    rellenar_aleatoria(m_aleatoria);
+    rellenar_aleatoria(m_aleatoria);                    
     imprimir_matriz(m_aleatoria);
     v0 = es_identidad(m_aleatoria);
     printf("Es matriz identidad:%s \n", (v0 == 1) ? positivo : negativo);        //evaluacion final 
     v1 = tiene_columna_completa(m_aleatoria);
     printf("Tiene columna completa de unos:%s \n", (v1 == 1) ? positivo : negativo);
-    v2 = tiene_fila_completa(m_aleatoria);
-    printf("Tiene fila completa de unos:%s \n", (v2 == 1) ? positivo : negativo);
+    v2 = tiene_fila_completa(m_aleatoria);                                              //se pueden utilizar las mismas variables pues solo se
+    printf("Tiene fila completa de unos:%s \n", (v2 == 1) ? positivo : negativo);       //utilizan para un condicional y pueden ser reescritas nuevamente
 
     return 0; 
 }
