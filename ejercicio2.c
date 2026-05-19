@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define SIZE 4
+#define SIZE 5
 /*
 =================================================== SECCION DE FUNCIONES ================================================
 */
@@ -83,7 +83,7 @@ int tiene_columna_completa(int m[][SIZE]) {     //lo mismo ocurre con el caso de
     return 0;
 }
 
-int imprimir_matriz (int m[][SIZE]) {       //esta funcion permite imprimir la matriz por medio de iteraciones
+void imprimir_matriz (int m[][SIZE]) {       //esta funcion permite imprimir la matriz por medio de iteraciones
     int i, j;
     
     printf("Matriz Ingresada: \n");
@@ -94,8 +94,17 @@ int imprimir_matriz (int m[][SIZE]) {       //esta funcion permite imprimir la m
         printf("\n");       //caber recalcar este cambio de linea por cada salto de fila
     
     }
-    return 0;
+    
 
+}
+
+void rellenar_aleatoria (int m[][SIZE]){
+    int i, j; 
+    for (i = 0; i < SIZE; i++){
+        for (j = 0; j < SIZE; j++){
+            m[i][j] = rand() % 2;
+        }
+    }
 }
 
 /* 
@@ -107,11 +116,15 @@ int main(void) {
     char positivo[] = "SI";         //varibales para evaluar resultado de analisis de matrices
     char negativo[] = "NO";
     int m[SIZE][SIZE] = {
-        {1, 1, 1, 1},
-        {0, 1, 1, 0},
-        {0, 0, 1, 1},
-        {0, 0, 1, 1}
+        {1, 1, 1, 1, 1},
+        {0, 1, 1, 0, 1},
+        {0, 0, 1, 1, 0},
+        {0, 0, 1, 1, 0}, 
+        {0, 0, 1, 1, 0}
     };
+    int m_aleatoria [SIZE][SIZE];
+    srand(time(NULL));
+
  /* 
 # Llamado de funciones #
 */
@@ -121,6 +134,16 @@ int main(void) {
     v1 = tiene_columna_completa(m);
     printf("Tiene columna completa de unos:%s \n", (v1 == 1) ? positivo : negativo);
     v2 = tiene_fila_completa(m);
+    printf("Tiene fila completa de unos:%s \n", (v2 == 1) ? positivo : negativo);
+
+    printf("\n");
+    rellenar_aleatoria(m_aleatoria);
+    imprimir_matriz(m_aleatoria);
+    v0 = es_identidad(m_aleatoria);
+    printf("Es matriz identidad:%s \n", (v0 == 1) ? positivo : negativo);        //evaluacion final 
+    v1 = tiene_columna_completa(m_aleatoria);
+    printf("Tiene columna completa de unos:%s \n", (v1 == 1) ? positivo : negativo);
+    v2 = tiene_fila_completa(m_aleatoria);
     printf("Tiene fila completa de unos:%s \n", (v2 == 1) ? positivo : negativo);
 
     return 0; 
