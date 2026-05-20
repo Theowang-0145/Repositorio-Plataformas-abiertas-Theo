@@ -46,20 +46,20 @@ int main (void) {
         printf("Ingrese el ID del sensor %d: ", a); //se utiliza a pues se necesita el valor del sensor que comienza en 1
         scanf("%d", &sensores[i].id);
 
-        printf("Ingrese el valor del sensor %d: ",a);
-        scanf("%f", &sensores[i].valor);
+        printf("Ingrese el valor del sensor %d: ",a);   
+        scanf("%f", &sensores[i].valor);        //se utiliza el valor i para ir variando de los valore de los sensores
        
-        sensores[i].estado = clasificar (sensores[i].valor);        
-        a++;
-    }
+        sensores[i].estado = clasificar (sensores[i].valor);     //se hace un llamado a la funcion de clasificar el valor ingresado   
+        a++;                                                     //esta funcion retorna una variable de estado, la cual se le asigna un numero
+    }                                                            //pues es un dato tipo enum, por lo que luego hay que darle un valor mas legible
 
     printf("\n Tabla de lecturas: \n");
-    printf("|-ID-|-Valor-|-Estado-| \n");
+    printf("|-ID-|-Valor-|-Estado-| \n");           //este es el inicio de la tabla
 
-    for (i = 0; i < MAX_SENSORES; i++){
+    for (i = 0; i < MAX_SENSORES; i++){             //se utiliza otra vez un ciclo for para imprimir los demas datos de manera seguida 
         printf("|-%d-|-%.2f-|-%s|\n",sensores[i].id,sensores[i].valor,
-        (sensores[i].estado == NORMAL) ? "NORMAL" :
-        (sensores[i].estado == ALERTA) ? "ALERTA" :
+        (sensores[i].estado == NORMAL) ? "NORMAL" :         //con este condicional se imprimen los datos obtenidos por el valor
+        (sensores[i].estado == ALERTA) ? "ALERTA" :         //resulta necesario para poder pasar el enum a algo imprimible.
         "FALLO");
     }
 
