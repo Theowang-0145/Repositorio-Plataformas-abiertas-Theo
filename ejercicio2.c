@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define SIZE 4
+#define SIZE 6
 /*
 =================================================== SECCION DE FUNCIONES ================================================
 */
@@ -118,11 +118,12 @@ int main(void) {
     char matriz [] = "Ingresada";
     char matriz_a [] = "Aleatoria";
     int m[SIZE][SIZE] = {
-        {1, 1, 1, 1},
-        {0, 1, 1, 0},
-        {0, 0, 1, 1},
-        {0, 0, 1, 1}, 
-        //{0, 0, 1, 1, 0}
+        {1, 1, 1, 1, 1, 1},
+        {0, 1, 1, 0, 1, 1},
+        {0, 0, 0, 1, 1, 0},
+        {1, 0, 0, 1, 0, 1}, 
+        {0, 0, 1, 1, 0, 1},
+        {1, 0, 1, 1, 0, 0}
     };
     int m_aleatoria [SIZE][SIZE];
     srand(time(NULL));
