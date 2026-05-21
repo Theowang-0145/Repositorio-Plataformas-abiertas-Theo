@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 /*
 =================================================== SECCION DE PARAMETROS ================================================
@@ -31,7 +32,7 @@ EstadoSensor clasificar(float valor){           //Esta funcion devuelve un estad
     }
     return estado;
 }
-int contar_estado(Lectura sensor[], int n, EstadoSensor estado_t){      //una vez inicializadas solo queda utiliz
+int contar_estado(Lectura sensor[], int n, EstadoSensor estado_t){      //una vez inicializadas las variables de parametros solo queda utilizarlos en la funcion
     int i, contador; 
     contador = 0;
 
@@ -44,15 +45,37 @@ int contar_estado(Lectura sensor[], int n, EstadoSensor estado_t){      //una ve
     return contador;        //por ultimo se retorna el contador
 
 }
-int lectura_extrema(Lectura s[], int n){
-    int i; 
+int lectura_extrema(Lectura sensores[], int n){     //para esta funcion se inicializan varias variables pues se hacen varias operaciones
+    int i, identificador; 
+    float valor_referencia, distancia_abs, distancia_nueva, a;  //se incializan varias variables tipo float pues se trabajo con el valor del sensor
+
+    valor_referencia = 50.0;        //se establecen dos parametros y el de la distancia abs, la cual es la que se va a mantener de referencia para el condicional
+    distancia_abs = 0;              
+
+    for (i = 0; i < n; i++){
+        a = sensores[i].valor - valor_referencia;
+        distancia_nueva = fabs(a);      //cabe recalcar el uso de la libreria stdlib.h para poder hacer las operaciones de absolutos sobre decimales
+
+        if (distancia_nueva > distancia_abs){       //este condicional se utiliza para determinar la lectura con mayor distancia del valor de referencia, asi como su posicion i
+            distancia_abs = distancia_nueva;
+            identificador = i;
+        }
+    }
+
+    return identificador;       //se retorna la posicion i la cual es solicitada por el enunciado
 }
  
 /*
 =================================================== SECCION DE MAIN =====================================================
 */
 int main (void) {
-    int i, a; 
+
+/*
+#Ingreso de variables y tabla de sonsores
+*/
+
+    int i, a, identificador; 
+    float estado_normal = 50.0;
     Lectura sensores[MAX_SENSORES]; //lo que quiere decir esto es que existen 10 sensores con 3 valores de parte del struct cada uno
 
     a = 1;
@@ -76,12 +99,31 @@ int main (void) {
         (sensores[i].estado == ALERTA) ? "ALERTA" : "FALLO");  //resulta necesario para poder pasar el enum a algo imprimible.
         
     }
+
+    /*
+    #Conteo de datos
+    */
     
     printf("\nConteo de estados \n");       //como lo unico que retorna la funcion es un numero se puede implementar directamente en el printf
-    printf("El conteo de senosres en estado Normal es: %d \n", contar_estado(sensores,MAX_SENSORES,NORMAL));
-    printf("El conteo de senosres en estado de ALERTA es: %d \n", contar_estado(sensores,MAX_SENSORES,ALERTA));
-    printf("El conteo de senosres en estado de FALLO es: %d \n", contar_estado(sensores,MAX_SENSORES,FALLO));
+    printf("El conteo de sensores en estado Normal es: %d \n", contar_estado(sensores,MAX_SENSORES,NORMAL));    //todas estas funciones devuelven un int que luegi se usa en el printf
+    printf("El conteo de sensores en estado de ALERTA es: %d \n", contar_estado(sensores,MAX_SENSORES,ALERTA));
+    printf("El conteo de sensores en estado de FALLO es: %d \n", contar_estado(sensores,MAX_SENSORES,FALLO));
 
+    /*
+    #Lectura maxima
+    */
+
+    printf("\nLectura maxima o extrema \n");
+    printf("Valor de referencia al estado normal: %.1f \n", estado_normal);
+
+    identificador = lectura_extrema(sensores,MAX_SENSORES);     //se guarda i en una variable de identificacion
+
+    printf("El identificador de la lectura extrema o sensor con mayor diferencia del estado normal: %d \n", identificador);
+
+    printf("La lectura corresponde al sensor %d de valor %.2f y estado %s \n",sensores[identificador].id, 
+            sensores[identificador].valor, 
+            (sensores[identificador].estado == NORMAL) ? "NORMAL" :                 //nuevamente se utilizan condicionales directamente en el printf, puesto que el tipo de 
+            (sensores[identificador].estado == ALERTA) ? "ALERTA" : "FALLO" );      //es un enum, entonces hay que asociarle un tipo de dato string
 
     return 0; 
 }
