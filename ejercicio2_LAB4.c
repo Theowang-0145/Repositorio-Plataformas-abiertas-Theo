@@ -2,15 +2,44 @@
 #include <stdlib.h>
 
 /*
-Por la complicidad de manejar archivos y la lectura de los mismos este primer avance consta en solamente entender como se lee el archivo para poder manejarlo de manera correcta
+Este segundo avance es mucho mas manejable pues ya se trabaja con el puntero de pixels, entonces consta de 
+aplicar un umbral ingresado por el usuario y luego sacar el negativo. el tercer avance ya va a ser sobre la creacion de las imagenes y las stats
 */
 
 /*
-void apply_threshold(unsigned char *pixels, int total, int threshold) 
-unsigned char *make_negative (unsigned char *pixels, int total)
 void write_pgm(const chat *filename, unsigned chat *pixels, int width, int height, int max_val)
 void print_stats (unsigned char *original, unsigned char *thresholded, int total)
 */
+unsigned char *make_negative (unsigned char *pixels, int total){
+
+
+    unsigned char *negative = malloc(total * sizeof(unsigned char));
+
+    if (negative == NULL) {     //verificacion para el puntero negative
+        printf("Error: no se pudo reservar memoria para el puntero negativo.\n");
+        return NULL;
+    }
+
+    for (int i = 0; i < total; i++) {       //condicion de negativa el cual cambia todos los valores del umbral al inverso por decirlo asi
+        *(negative + i) = 255 - *(pixels + i);
+    }
+
+    return negative;    //retorna negative como puntero para ser recibido por el otro puntero en main
+}
+
+void apply_threshold(unsigned char *pixels, int total_datos, int threshold) {
+    
+    //la idea aca es leer dato por dato los pixeles aplicando la condicion del umbral
+
+    for (int i = 0; i<total_datos; i++){
+        if (*(pixels + i) >= threshold){    //aca se plantea la condicion del umbral y se van cambiando los valores de pixels uno por uno hasta el total de datos
+            *(pixels + i) = 255; 
+        }
+        else {
+            *(pixels + i) = 0; 
+        }
+    }
+}
 
 unsigned char *read_pgm(const char *filename, int *width, int* height, int *max_val){   //esta funcion es unicamente para leer el archivo input
 
@@ -30,6 +59,11 @@ unsigned char *read_pgm(const char *filename, int *width, int* height, int *max_
     int tot_datos = (*width) * (*height);
     pixels = malloc(tot_datos * sizeof(unsigned char));     //a la hora de analizar los pixeles por facilidad se analizan en un arreglo lineal del tamano del ancho por alto
 
+    if (pixels == NULL) {       //esta es la verificacion para la memoria dinamica del puntero pixels
+        printf("Error: no se pudo reservar memoria para el puntero de pixels.\n");
+        return NULL;
+    }
+
     for (int i = 0; i<tot_datos; i++){
         fscanf(archivo, "%hhu", pixels +i);         //de esta forma cada dato se copia directamente al arreglo lineal para poder ser analizados despues 
     }
@@ -40,23 +74,35 @@ unsigned char *read_pgm(const char *filename, int *width, int* height, int *max_
 }
 
 int main (void){ 
-    int width, height, max_val;
+    int width, height, max_val, threshold, total_datos;
     char filename [100];        //aca se inicializan todas las variables, entre ellas la variable del nombre del archivo
     unsigned char *pixels = NULL;       //se inicializa el puntero
-    //unsigned char *negative = NULL; 
+    unsigned char *negative = NULL; 
+
     
-    printf("Ingrese el nombre dle archivo (<archivo>.pgm) : ");
+    
+    printf("Ingrese el nombre del archivo (<archivo>.pgm) : ");
     scanf("%99s", filename);
 
     pixels = read_pgm(filename, &width, &height, &max_val); //aca se iguala directamente con la funcion pues se retorna un puntero directamente
+    
+    total_datos = width * height; //cabe aclarar que este dato debe ser tomado despues de la funcion read_pgm pues sino los valores no han sido asignados todavia
 
 
-    printf("Ancho: %d  \n", width);     //en este caso se utilizaron estos prints para poder verificar que el escaneo funciono de manera correcta
-    printf("Alto: %d  \n", height);
-    printf("Max val: %d \n", max_val);
+    printf("Ingrese el umbral: ");
+    scanf("%d", &threshold);        //aca se lee el umbral ingresado por el usuario
 
-    for (int i = 0; i < 8; i++) {
-    printf("%hhu ", *(pixels + i));
-    }
+    apply_threshold(pixels,total_datos,threshold); 
+    negative = make_negative(pixels,total_datos);   //se iguala a negative pues retorna un puntero de un array de datos
+
+    for (int k = 0; k<8; k++){
+        printf("%hhu ", *(negative +k));        //esto es simplemente una prueba de que el negativo si esta teniendo datos coherentes
+    } 
+    printf("\n");
+
+
+    //free(pixels)
+    //free(negaive) estos dos se ponen hasta el finak cuando ya no sean utilizados
+
     return 0;
 }
