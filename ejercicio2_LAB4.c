@@ -2,14 +2,59 @@
 #include <stdlib.h>
 
 /*
-Este segundo avance es mucho mas manejable pues ya se trabaja con el puntero de pixels, entonces consta de 
-aplicar un umbral ingresado por el usuario y luego sacar el negativo. el tercer avance ya va a ser sobre la creacion de las imagenes y las stats
+Ya este ultimo avance es sobre la impresion de los punteros en archivos pgm para comparar los resultados
 */
 
 /*
-void write_pgm(const chat *filename, unsigned chat *pixels, int width, int height, int max_val)
-void print_stats (unsigned char *original, unsigned char *thresholded, int total)
+=================================================== SECCION DE FUNCIONES ================================================
 */
+
+void print_stats (unsigned char *original, unsigned char *thresholded, int total){
+
+    int blanco = 0;
+    int negro = 0; 
+    int sumatoria = 0; 
+    float promedio = 0; 
+
+    for (int i = 0; i<total; i++){
+        if (*(thresholded + i) == 0){
+            negro++; 
+        }
+        else{
+            blanco++; 
+        }
+        sumatoria += *(original + i);
+    }
+
+    promedio = (float)sumatoria / total;
+
+    printf("Para la umbralizada la cantidad de pixeles blancos son: %d \n", blanco); 
+    printf("Para la umbralizada la cantidad de pixeles negros son: %d \n", negro); 
+    printf("El promedio de pixeles del arreglo original es: %2.f \n", promedio);
+
+}
+
+void write_pgm(const char *filename, unsigned char *pixels, int width, int height, int max_val){ //esta funcion genera archivos de tipo pgm con todos datos en su interior 
+
+    FILE *archivo = fopen(filename, "w");   //esta funcion crea un archivo con el nombre ingresado
+    fprintf(archivo, "P2\n");
+    fprintf(archivo, "%d %d\n", width, height); //seguidamente hay que ponerle los datos linea por linea y dejando espaios para cumplir con el formato
+    fprintf(archivo, "%d \n", max_val); 
+
+    int a = 0;
+    for (int i = 0; i<height; i++){     //se utiliaz un ciclo anidado con height y width como restricciones para poder imprimir los datos cumpliendo con el formato del input.pgm
+
+        for(int j = 0; j<width; j++){
+            fprintf(archivo, "%hhu ", *(pixels + a));   //cabe aclarar que pixels puede ser cualquier puntero, ya sea el umbralizado o el negative
+            a++;
+        }
+        fprintf(archivo, "\n");
+
+    }
+    fclose(archivo);
+
+}
+
 unsigned char *make_negative (unsigned char *pixels, int total){
 
 
@@ -73,11 +118,18 @@ unsigned char *read_pgm(const char *filename, int *width, int* height, int *max_
 
 }
 
+/*
+=================================================== SECCION DE MAIN =====================================================
+*/
+
 int main (void){ 
     int width, height, max_val, threshold, total_datos;
     char filename [100];        //aca se inicializan todas las variables, entre ellas la variable del nombre del archivo
+    char umbralizado_filename [100];    //se ponen dos nuevas varibales de caracteres para tener mas orden en la escritura de archivos
+    char negative_filename [100];
     unsigned char *pixels = NULL;       //se inicializa el puntero
     unsigned char *negative = NULL; 
+    unsigned char *pixels_original = NULL; //se inicializa un putero a manera de copia del puntero original pues el umbral se aplicaba sobre el original
 
     
     
@@ -85,7 +137,8 @@ int main (void){
     scanf("%99s", filename);
 
     pixels = read_pgm(filename, &width, &height, &max_val); //aca se iguala directamente con la funcion pues se retorna un puntero directamente
-    
+    pixels_original = read_pgm(filename, &width, &height, &max_val);
+
     total_datos = width * height; //cabe aclarar que este dato debe ser tomado despues de la funcion read_pgm pues sino los valores no han sido asignados todavia
 
 
@@ -95,14 +148,24 @@ int main (void){
     apply_threshold(pixels,total_datos,threshold); 
     negative = make_negative(pixels,total_datos);   //se iguala a negative pues retorna un puntero de un array de datos
 
-    for (int k = 0; k<8; k++){
-        printf("%hhu ", *(negative +k));        //esto es simplemente una prueba de que el negativo si esta teniendo datos coherentes
-    } 
-    printf("\n");
+    printf("Ingrese el nombre del archivo (<archivo>.pgm) a crear para el umbralizado : "); //para ambos archivos se solicita un nombre y luego se utiliza la misma funcion
+    scanf("%99s", umbralizado_filename);                                                    //para generar un archivo con ambos punteros
+
+    write_pgm(umbralizado_filename, pixels, width, height, max_val);
 
 
-    //free(pixels)
-    //free(negaive) estos dos se ponen hasta el finak cuando ya no sean utilizados
+    printf("Ingrese el nombre del archivo (<archivo>.pgm) a crear para el negativo : ");
+    scanf("%99s", negative_filename);
+
+    write_pgm(negative_filename, negative, width, height, max_val);
+
+    print_stats(pixels_original,pixels,total_datos);
+
+
+    free(pixels_original);
+    free(pixels);
+    free(negative);
+    
 
     return 0;
 }
