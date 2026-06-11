@@ -3,20 +3,44 @@
 #include <time.h>
 
 
-/*
-este primer avance va a constar en pedirle al usuario un tamano de una matriz cuadrada y poder hacerle un espacio de punteros 
-de manera que esten seguidos uno de otro y asi se pueda obtener un puntero doble que tenga ese arreglo de punteros. 
-seguidamente llenarlos e imprimirlos en pantalla. Tambien imprimir la memoria de cada puntero, para demostrar que estan seguidos
-*/
-
-/*
-void findLargestLine(int **matriz, int size, int *result){}
-
-*/
 
 /*
 =================================================== SECCION DE FUNCIONES ================================================
 */
+
+void findLargestLine(int **matriz, int size, int *result){  //se busca un arreglo lineal por lo que los datos deben ser pasados linealmente a un array de size * size de tamano
+
+    int *datos = malloc((size*size) * sizeof(int)); //se inicializa un array de datos el cual tiene un puntero que apunta hacia la memoria de estos
+
+    int a =0;       //lo que se busca es reescribir todos los datos de la matriz de punteros en un solo arreglo lineal, para asi recorrelo linealmente
+
+    for(int i = 0; i<size; i++){
+        for(int j = 0; j<size; j++){
+            *(datos + a) = *(*(matriz + i) + j);
+            a++;  
+        }
+    }
+
+    int secuencia_actual = 0;
+    int secuencia_mayor = 0;
+
+    for (int k = 0; k<(size*size); k++ ){
+        if (*(datos + k) == 1){
+            secuencia_actual++;
+            if (secuencia_actual > secuencia_mayor){
+                secuencia_mayor = secuencia_actual;
+            }
+        }  
+
+        else{
+            secuencia_actual = 0;
+        }            
+    }
+    *result = secuencia_mayor;
+    free(datos);
+}
+
+
 void allocateMatriz (int ***matriz, int size){
     *matriz = malloc(size * sizeof(int *)); //esto hace size espacios de tamano de punteros de enteros, esto pues cada puntero va a apuntar a una fila de la matriz
     
@@ -27,12 +51,12 @@ void allocateMatriz (int ***matriz, int size){
     }                                                  //se debe de tomar en cuenta que no es un arreglo lineal, por lo que en la funcion que queda debe hacerse un arreglo con todos estos numeros y ahi recorrerlo con punteros
 }
 
-void fillMatriz(int **matriz, int size){        //funcion para rellenar la matriz de unos
+void fillMatriz(int **matriz, int size){  //funcion para rellenar la matriz de unos
 
     for (int i = 0; i<size; i++){       //cabe recalcar que se desrefencia una vez por cada i y luego otra vez por cada j, puesto que se busca que cada direccion a la que apunte cada puntero dentro del array sea un 0 o un 1
         for (int j = 0; j<size; j++){
 
-            *(*(matriz + i) + j) = (rand() % 10) < 7;       //se utiliza rand para generar datos aleatorios entre 1 y 0, en este caso se cambia un poco la probabilidad para que aparezcan mas 1's
+            *(*(matriz + i) + j) = (rand() % 10) < 7; //se utiliza rand para generar datos aleatorios entre 1 y 0, en este caso se cambia un poco la probabilidad para que aparezcan mas 1's
         }
     }
 }
@@ -59,7 +83,7 @@ void freeMatriz (int **matriz, int size){  //esta funcion es para liberar el esp
 */
 
 int main (void){
-    int size;
+    int size, largestLine;
     int **matriz = NULL; //se inicializa el puntero en NULL pues se necesita rellenar despues segun lo que quiera el usuario
     srand(time(NULL));
 
@@ -70,5 +94,11 @@ int main (void){
     allocateMatriz(&matriz,size); //como la matriz va a ser cambiada desde un puntero no se necesita retornar nada. Cabe aclarar que esta funcion lo que realiza es guardarle un espacio de memoria a ese puntero, el cual va a ser un array de n punteros
     fillMatriz(matriz, size); //las funciones siguientes reciben la matriz como tal, es decir el puntero doble, pues se necesita leer, llenar, o analizar, no cambiar nada de ella
     printMatriz(matriz,size); 
+    findLargestLine(matriz,size,&largestLine);
     freeMatriz(matriz,size);
+     
+
+    printf("El tamano de la secuencia de 1's mas grande es: %d \n", largestLine);
+    return 0;
+
 }
